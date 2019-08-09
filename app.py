@@ -12,21 +12,23 @@ import logging
 from logging import Formatter, FileHandler
 from flask_wtf import Form
 from forms import *
+from flask_migrate import Migrate
 
 
 # ---------------------------------------------------------------------------- #
 # App Config.
 # ---------------------------------------------------------------------------- #
 
-APPLICATION_NAME = "Fyyur: Artist Booking Site"
+APPLICATION_NAME = "app.py"
 
 app = Flask(__name__)
 moment = Moment(app)
 app.config.from_object('config')
 db = SQLAlchemy(app)
 
+from models import Artist, Show, Venue, Genre
 
-# TODO: connect to a local postgresql database
+migrate = Migrate(app, db)
 
 
 # ---------------------------------------------------------------------------- #
@@ -95,8 +97,7 @@ def search_venues():
       "count": 1,
       "data": [{
         "id": 2,
-        "name": "The Dueling Pianos Bar",
-        "num_upcoming_shows": 0,
+        "name": "The Dueling Pianos Bar"
       }]
     }
     return render_template('pages/search_venues.html', results=response, search_term=request.form.get('search_term', ''))

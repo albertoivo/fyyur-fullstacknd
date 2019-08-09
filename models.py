@@ -1,14 +1,12 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = ''
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://fyyur:fyyur@localhost:5432/fyyurdb'
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = False
 
 db = SQLAlchemy(app)
-migrate = Migrate(app, db)
 
 
 # ---------------------------------------------------------------------------- #
@@ -20,15 +18,18 @@ class Venue(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
+    genres = db.relationship("Genre")
+    address = db.Column(db.String(120))
     city = db.Column(db.String(120))
     state = db.Column(db.String(120))
-    address = db.Column(db.String(120))
     phone = db.Column(db.String(120))
-    image_link = db.Column(db.String(500))
+    website = db.Column(db.String)
     facebook_link = db.Column(db.String(120))
-    num_upcoming_shows = db.Column(db.Integer)
-
-    # TODO: implement any missing fields, as a database migration using Flask-Migrate
+    seeking_talent = db.Column(db.Boolean)
+    seeking_description = db.Column(db.String)
+    image_link = db.Column(db.String(500))
+    past_shows = db.relationship("Show")
+    upcoming_shows = db.relationship("Show")
 
 
 class Artist(db.Model):
@@ -36,19 +37,34 @@ class Artist(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
+    genres = db.relationship("Genre")
     city = db.Column(db.String(120))
     state = db.Column(db.String(120))
     phone = db.Column(db.String(120))
-    genres = db.Column(db.String(120))
-    image_link = db.Column(db.String(500))
+    website = db.Column(db.String)
     facebook_link = db.Column(db.String(120))
-
-    # TODO: implement any missing fields, as a database migration using Flask-Migrate
+    seeking_venue = db.Column(db.Boolean)
+    seeking_description = db.Column(db.String)
+    image_link = db.Column(db.String(500))
+    past_shows = db.relationship("Venue")
+    upcoming_shows = db.relationship("Venue")
 
 
 class Show(db.Model):
     __tablename__ = 'Show'
 
     id = db.Column(db.Integer, primary_key=True)
+    venue = db.relationship("Venue")
+    artist = db.relationship("Artist")
+    start_time = db.DateTime()
 
-# TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration.
+
+class Genre(db.Model):
+    __tablename__ = 'Genre'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+
+
+# Create the initial database
+db.create_all()
