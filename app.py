@@ -5,6 +5,7 @@
 import json
 import dateutil.parser
 import babel
+import crud
 from flask import Flask, render_template, request, Response, flash, redirect, url_for
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
@@ -12,7 +13,9 @@ import logging
 from logging import Formatter, FileHandler
 from flask_wtf import Form
 from forms import *
+from models import Artist, Show, Venue, Genre
 from flask_migrate import Migrate
+from config import Config
 
 
 # ---------------------------------------------------------------------------- #
@@ -22,14 +25,10 @@ from flask_migrate import Migrate
 APPLICATION_NAME = "app.py"
 
 app = Flask(__name__)
+app.config.from_object(Config)
 moment = Moment(app)
-app.config.from_object('config')
 db = SQLAlchemy(app)
-
-from models import Artist, Show, Venue, Genre
-
 migrate = Migrate(app, db)
-
 
 # ---------------------------------------------------------------------------- #
 # Filters.
@@ -410,10 +409,24 @@ def create_artist_submission():
     # TODO: insert form data as a new Venue record in the db, instead
     # TODO: modify data to be the data object returned from db insertion
 
+    new_artist = Artist(
+        name=request.form['name'],
+        city=request.form['city'],
+        state=request.form['state'],
+        phone=request.form['phone'],
+        genres=request.form['genres'],
+        facebook_link=request.form['facebook_link'],
+        image_link=request.form['image_link']
+    )
+
+    crud.create_artist(new_artist)
+
     # on successful db insert, flash success
     flash('Artist ' + request.form['name'] + ' was successfully listed!')
+
     # TODO: on unsuccessful db insert, flash an error instead.
     # e.g., flash('An error occurred. Artist ' + data.name + ' could not be listed.')
+
     return render_template('pages/home.html')
 
 
