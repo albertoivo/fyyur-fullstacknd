@@ -18,7 +18,7 @@ class Venue(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
-    genres = db.ARRAY(db.String)
+    genres = db.Column(db.ARRAY(db.String))
     address = db.Column(db.String(120))
     city = db.Column(db.String(120))
     state = db.Column(db.String(120))
@@ -35,7 +35,7 @@ class Artist(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
-    genres = db.ARRAY(db.String)
+    genres = db.Column(db.ARRAY(db.String))
     city = db.Column(db.String(120))
     state = db.Column(db.String(120))
     phone = db.Column(db.String(120))
@@ -53,13 +53,6 @@ class Show(db.Model):
     venue_id = db.Column(db.Integer)
     artist_id = db.Column(db.Integer)
     start_time = db.DateTime()
-
-
-class Genre(db.Model):
-    __tablename__ = 'Genre'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
 
 
 # Create the initial database

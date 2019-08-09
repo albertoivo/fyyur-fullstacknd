@@ -13,7 +13,7 @@ import logging
 from logging import Formatter, FileHandler
 from flask_wtf import Form
 from forms import *
-from models import Artist, Show, Venue, Genre
+from models import Artist, Show, Venue
 from flask_migrate import Migrate
 from config import Config
 
