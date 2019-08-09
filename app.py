@@ -409,23 +409,28 @@ def create_artist_submission():
     # TODO: insert form data as a new Venue record in the db, instead
     # TODO: modify data to be the data object returned from db insertion
 
-    new_artist = Artist(
-        name=request.form['name'],
-        city=request.form['city'],
-        state=request.form['state'],
-        phone=request.form['phone'],
-        genres=request.form['genres'],
-        facebook_link=request.form['facebook_link'],
-        image_link=request.form['image_link']
-    )
+    try:
 
-    crud.create_artist(new_artist)
+        new_artist = Artist(
+            name=request.form['name'],
+            city=request.form['city'],
+            state=request.form['state'],
+            phone=request.form['phone'],
+            genres=request.form['genres'],
+            facebook_link=request.form['facebook_link'],
+            image_link=request.form['image_link'],
+            website=request.form['website'],
+            seeking_venue=True if request.form['seeking_venue'] == 'y' else False,
+            seeking_description=request.form['seeking_description']
+        )
 
-    # on successful db insert, flash success
-    flash('Artist ' + request.form['name'] + ' was successfully listed!')
+        crud.create_artist(new_artist)
 
-    # TODO: on unsuccessful db insert, flash an error instead.
-    # e.g., flash('An error occurred. Artist ' + data.name + ' could not be listed.')
+        flash('Artist ' + request.form['name'] + ' was successfully listed!')
+
+    except ValueError:  # FIXME melhorar essa exception
+
+        flash('An error occurred. Artist ' + request.form['name'] + ' could not be listed.')
 
     return render_template('pages/home.html')
 
