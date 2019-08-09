@@ -50,8 +50,8 @@ class Show(db.Model):
     __tablename__ = 'Show'
 
     id = db.Column(db.Integer, primary_key=True)
-    venue = db.Column(db.String)
-    artist = db.Column(db.String)
+    venue_id = db.Column(db.Integer)
+    artist_id = db.Column(db.Integer)
     start_time = db.DateTime()
 
 
