@@ -41,7 +41,7 @@ def format_datetime(value, format='medium'):
         format = "EEEE MMMM, d, y 'at' h:mma"
     elif format == 'medium':
         format = "EE MM, dd, y h:mma"
-    return babel.dates.format_datetime(date, format)
+    return babel.dates.format_datetime(date, format, locale='en')
 
 
 app.jinja_env.filters['datetime'] = format_datetime
@@ -225,17 +225,7 @@ def delete_venue(venue_id):
 
 @app.route('/artists')
 def artists():
-    # TODO: replace with real data returned from querying the database
-    data = [{
-      "id": 4,
-      "name": "Guns N Petals",
-    }, {
-      "id": 5,
-      "name": "Matt Quevedo",
-    }, {
-      "id": 6,
-      "name": "The Wild Sax Band",
-    }]
+    data = crud.get_all_artists()
     return render_template('pages/artists.html', artists=data)
 
 
@@ -409,28 +399,31 @@ def create_artist_submission():
     # TODO: insert form data as a new Venue record in the db, instead
     # TODO: modify data to be the data object returned from db insertion
 
-    try:
+    form = ArtistForm(request.form)
 
-        new_artist = Artist(
-            name=request.form['name'],
-            city=request.form['city'],
-            state=request.form['state'],
-            phone=request.form['phone'],
-            genres=request.form['genres'],
-            facebook_link=request.form['facebook_link'],
-            image_link=request.form['image_link'],
-            website=request.form['website'],
-            seeking_venue=True if request.form['seeking_venue'] == 'y' else False,
-            seeking_description=request.form['seeking_description']
-        )
+    if form.validate():
 
-        crud.create_artist(new_artist)
+        try:
+            new_artist = Artist(
+                name=form.name.data,
+                city=form.city.data,
+                state=form.state.data,
+                phone=form.phone.data,
+                genres=form.genres.data,
+                facebook_link=form.facebook_link.data,
+                image_link=form.image_link.data,
+                website=form.website.data,
+                seeking_venue=form.seeking_venue.data,
+                seeking_description=form.seeking_description.data
+            )
 
-        flash('Artist ' + request.form['name'] + ' was successfully listed!')
+            crud.create_artist(new_artist)
 
-    except ValueError:  # FIXME melhorar essa exception
+            flash('Artist ' + request.form['name'] + ' was successfully listed!')
 
-        flash('An error occurred. Artist ' + request.form['name'] + ' could not be listed.')
+        except ValueError:  # FIXME melhorar essa exception
+
+            flash('An error occurred. Artist ' + form.name + ' could not be listed.')
 
     return render_template('pages/home.html')
 
