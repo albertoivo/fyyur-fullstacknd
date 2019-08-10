@@ -493,6 +493,9 @@ def shows():
       "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
       "start_time": "2035-04-15T20:00:00.000Z"
     }]
+
+
+
     return render_template('pages/shows.html', shows=data)
 
 
@@ -505,14 +508,23 @@ def create_shows():
 
 @app.route('/shows/create', methods=['POST'])
 def create_show_submission():
-    # called to create new shows in the db, upon submitting new show listing form
-    # TODO: insert form data as a new Show record in the db, instead
+    form = ShowForm(request.form)
 
-    # on successful db insert, flash success
-    flash('Show was successfully listed!')
-    # TODO: on unsuccessful db insert, flash an error instead.
-    # e.g., flash('An error occurred. Show could not be listed.')
-    # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
+    try:
+        new_show = Show(
+            artist_id=form.artist_id.data,
+            venue_id=form.venue_id.data,
+            start_time=form.start_time.data
+        )
+
+        crud.create_show(new_show)
+
+        flash('Show was successfully listed!')
+
+    except ValueError:  # FIXME melhorar essa exception
+
+        flash('An error occurred. Show could not be listed.')
+
     return render_template('pages/home.html')
 
 

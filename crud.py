@@ -21,3 +21,8 @@ def get_all_venues():
 
 def get_venue_by_id(id):
     return Venue.query.filter_by(id=id).first_or_404()
+
+
+def create_show(new_show):
+    db.session.add(new_show)
+    db.session.commit()
