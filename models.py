@@ -29,6 +29,33 @@ class Venue(db.Model):
     seeking_description = db.Column(db.String)
     image_link = db.Column(db.String(500))
 
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'genres': self.genres,
+            'address': self.address,
+            'city': self.city,
+            'state': self.state,
+            'phone': self.phone,
+            'website': self.website,
+            'facebook_link': self.facebook_link,
+            'seeking_talent': self.seeking_talent,
+            'seeking_description': self.seeking_description,
+            'image_link': self.image_link
+        }
+
+    @property
+    def show(self):
+        return {
+            'city': self.city,
+            'state': self.state,
+        }
+
+    def __repr__(self):
+        return '<Venue %r>' % self.name
+
 
 class Artist(db.Model):
     __tablename__ = 'Artist'

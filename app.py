@@ -63,7 +63,7 @@ def index():
 def venues():
     # TODO: replace with real venues data.
     #       num_shows should be aggregated based on number of upcoming shows per venue.
-    data = [{
+    data_ = [{
       "city": "San Francisco",
       "state": "CA",
       "venues": [{
@@ -84,7 +84,15 @@ def venues():
         "num_upcoming_shows": 0,
       }]
     }]
-    return render_template('pages/venues.html', areas=data)
+
+    venues = crud.get_all_venues()
+    data = {"": [v.show for v in venues]}
+    for d in data[""]:
+        d["venues"] = [
+            v.serialize for v in venues if v.city == d["city"] and v.state == d["state"]
+        ]
+
+    return render_template('pages/venues.html', areas=data[""])
 
 
 @app.route('/venues/search', methods=['POST'])
@@ -183,8 +191,9 @@ def show_venue(venue_id):
       "past_shows_count": 1,
       "upcoming_shows_count": 1,
     }
-    data = list(
-        filter(lambda d: d['id'] == venue_id, [data1, data2, data3]))[0]
+
+    data = crud.get_venue_by_id(venue_id)
+
     return render_template('pages/show_venue.html', venue=data)
 
 #  Create Venue
@@ -199,14 +208,31 @@ def create_venue_form():
 
 @app.route('/venues/create', methods=['POST'])
 def create_venue_submission():
-    # TODO: insert form data as a new Venue record in the db, instead
-    # TODO: modify data to be the data object returned from db insertion
+    form = VenueForm(request.form)
 
-    # on successful db insert, flash success
-    flash('Venue ' + request.form['name'] + ' was successfully listed!')
-    # TODO: on unsuccessful db insert, flash an error instead.
-    # e.g., flash('An error occurred. Venue ' + data.name + ' could not be listed.')
-    # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
+    try:
+        new_venue = Venue(
+            name=form.name.data,
+            city=form.city.data,
+            state=form.state.data,
+            address=form.address.data,
+            phone=form.phone.data,
+            genres=form.genres.data,
+            facebook_link=form.facebook_link.data,
+            image_link=form.image_link.data,
+            website=form.website.data,
+            seeking_talent=form.seeking_talent.data,
+            seeking_description=form.seeking_description.data
+        )
+
+        crud.create_venue(new_venue)
+
+        flash('Venue ' + request.form['name'] + ' was successfully listed!')
+
+    except ValueError:  # FIXME melhorar essa exception
+
+        flash('An error occurred. Venue ' + form.name + ' could not be listed.')
+
     return render_template('pages/home.html')
 
 
@@ -395,35 +421,30 @@ def create_artist_form():
 
 @app.route('/artists/create', methods=['POST'])
 def create_artist_submission():
-    # called upon submitting the new artist listing form
-    # TODO: insert form data as a new Venue record in the db, instead
-    # TODO: modify data to be the data object returned from db insertion
 
     form = ArtistForm(request.form)
 
-    if form.validate():
+    try:
+        new_artist = Artist(
+            name=form.name.data,
+            city=form.city.data,
+            state=form.state.data,
+            phone=form.phone.data,
+            genres=form.genres.data,
+            facebook_link=form.facebook_link.data,
+            image_link=form.image_link.data,
+            website=form.website.data,
+            seeking_venue=form.seeking_venue.data,
+            seeking_description=form.seeking_description.data
+        )
 
-        try:
-            new_artist = Artist(
-                name=form.name.data,
-                city=form.city.data,
-                state=form.state.data,
-                phone=form.phone.data,
-                genres=form.genres.data,
-                facebook_link=form.facebook_link.data,
-                image_link=form.image_link.data,
-                website=form.website.data,
-                seeking_venue=form.seeking_venue.data,
-                seeking_description=form.seeking_description.data
-            )
+        crud.create_artist(new_artist)
 
-            crud.create_artist(new_artist)
+        flash('Artist ' + request.form['name'] + ' was successfully listed!')
 
-            flash('Artist ' + request.form['name'] + ' was successfully listed!')
+    except ValueError:  # FIXME melhorar essa exception
 
-        except ValueError:  # FIXME melhorar essa exception
-
-            flash('An error occurred. Artist ' + form.name + ' could not be listed.')
+        flash('An error occurred. Artist ' + form.name + ' could not be listed.')
 
     return render_template('pages/home.html')
 
