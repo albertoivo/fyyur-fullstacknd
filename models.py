@@ -53,6 +53,13 @@ class Venue(db.Model):
             'state': self.state,
         }
 
+    @property
+    def search(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+        }
+
     def __repr__(self):
         return '<Venue %r>' % self.name
 

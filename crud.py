@@ -31,6 +31,10 @@ def get_venue_by_id(id):
     return Venue.query.filter_by(id=id).first_or_404()
 
 
+def get_venue_by_partial_name(search):
+    return Venue.query.filter(Venue.name.ilike("%" + search + "%")).all()
+
+
 def create_show(new_show):
     db.session.add(new_show)
     db.session.commit()
