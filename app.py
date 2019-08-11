@@ -86,7 +86,7 @@ def venues():
     }]
 
     venues = crud.get_all_venues()
-    data = {"": [v.show for v in venues]}
+    data = {"": [v.local for v in venues]}
     for d in data[""]:
         d["venues"] = [
             v.serialize for v in venues if v.city == d["city"] and v.state == d["state"]
@@ -236,7 +236,7 @@ def create_venue_submission():
     return render_template('pages/home.html')
 
 
-@app.route('/venues/<venue_id>', methods=['DELETE'])
+@app.route('/venues/<int:venue_id>', methods=['DELETE'])
 def delete_venue(venue_id):
     # TODO: Complete this endpoint for taking a venue_id, and using
     # SQLAlchemy ORM to delete a record. Handle cases where the session commit could fail.
@@ -260,7 +260,7 @@ def search_artists():
     # TODO: implement search on artists with partial string search. Ensure it is case-insensitive.
     # seach for "A" should return "Guns N Petals", "Matt Quevado", and "The Wild Sax Band".
     # search for "band" should return "The Wild Sax Band".
-    response = {
+    _response = {
       "count": 1,
       "data": [{
         "id": 4,
@@ -268,7 +268,16 @@ def search_artists():
         "num_upcoming_shows": 0,
       }]
     }
-    return render_template('pages/search_artists.html', results=response, search_term=request.form.get('search_term', ''))
+
+    search = request.form.get('search_term', '')
+    artists = crud.get_artist_by_partial_name(search)
+    response = {"count": len(artists)}
+
+    response["data"] = [
+        artist.search for artist in artists
+    ]
+
+    return render_template('pages/search_artists.html', results=response, search_term=search)
 
 
 @app.route('/artists/<int:artist_id>')
@@ -457,7 +466,7 @@ def shows():
     # displays list of shows at /shows
     # TODO: replace with real venues data.
     #       num_shows should be aggregated based on number of upcoming shows per venue.
-    data = [{
+    _data = [{
       "venue_id": 1,
       "venue_name": "The Musical Hop",
       "artist_id": 4,
@@ -494,7 +503,19 @@ def shows():
       "start_time": "2035-04-15T20:00:00.000Z"
     }]
 
-
+    data = []
+    shows = crud.get_all_shows()
+    for show in shows:
+        venue = crud.get_venue_by_id(show.venue_id)
+        artist = crud.get_artist_by_id(show.artist_id)
+        data.extend([{
+            "venue_id": venue.id,
+            "venue_name": venue.name,
+            "artist_id": artist.id,
+            "artist_name": artist.name,
+            "artist_image_link": artist.image_link,
+            "start_time": show.start_time.strftime("%m/%d/%Y, %H:%M")
+      }])
 
     return render_template('pages/shows.html', shows=data)
 

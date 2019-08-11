@@ -1,4 +1,4 @@
-from models import db, Artist, Venue
+from models import db, Artist, Venue, Show
 
 
 def create_artist(new_artist):
@@ -8,6 +8,14 @@ def create_artist(new_artist):
 
 def get_all_artists():
     return Artist.query.all()
+
+
+def get_artist_by_id(id):
+    return Artist.query.filter_by(id=id).first_or_404()
+
+
+def get_artist_by_partial_name(search):
+    return Artist.query.filter(Artist.name.ilike("%" + search + "%")).all()
 
 
 def create_venue(new_venue):
@@ -26,3 +34,7 @@ def get_venue_by_id(id):
 def create_show(new_show):
     db.session.add(new_show)
     db.session.commit()
+
+
+def get_all_shows():
+    return Show.query.all()
