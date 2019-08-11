@@ -1,9 +1,11 @@
 The README says that 'templates/forms pages are complete, but:
 
-    - 'new_artist.html' doesn't have the properties: 'seeking_venue', 'seeking_description' and 'website'.
+    - 'new_artist.html' - It doesn't have the properties: 'seeking_venue', 'seeking_description' and 'website'.
        And the page 'show_artist.html' use them.
 
-    - 'new_venue.html'. It doesn't have properties: 'seeking_venue', 'seeking_description' and 'website'.
+    - 'new_venue.html' - It doesn't have properties: 'seeking_venue', 'seeking_description' and 'website'.
        And the page 'show_venue.html' use them.
+
+    - 'edit_artist' - It doesn't have any 'value'. I had to add them all.
 
 So I had to modify the 'templates/forms/new_artist.html' and 'templates/forms/new_venue.html', ok?
