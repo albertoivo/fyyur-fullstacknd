@@ -113,7 +113,7 @@ def search_venues():
     response = {"count": len(venues)}
 
     response["data"] = [
-      venue.search for venue in venues
+        venue.search for venue in venues
     ]
 
     return render_template('pages/search_venues.html', results=response, search_term=request.form.get('search_term', ''))
@@ -201,9 +201,11 @@ def show_venue(venue_id):
       "upcoming_shows_count": 1,
     }
 
-    data = crud.get_venue_by_id(venue_id)
+    venue = crud.get_venue_by_id(venue_id)
 
-    return render_template('pages/show_venue.html', venue=data)
+    data = {"": venue.complete}
+
+    return render_template('pages/show_venue.html', venue=data[""])
 
 #  Create Venue
 #  ----------------------------------------------------------------

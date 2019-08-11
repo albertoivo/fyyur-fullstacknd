@@ -2,6 +2,8 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 from flask_migrate import Migrate
+import crud
+import datetime
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -28,6 +30,7 @@ class Venue(db.Model):
     seeking_talent = db.Column(db.Boolean)
     seeking_description = db.Column(db.String)
     image_link = db.Column(db.String)
+    shows = db.relationship('Show', backref='Venue', lazy=True)
 
     @property
     def serialize(self):
@@ -60,6 +63,40 @@ class Venue(db.Model):
             'name': self.name,
         }
 
+    @property
+    def complete(self):
+        past_shows = crud.get_past_shows_at_venue(self.id)
+        upcoming_shows = crud.get_upcoming_shows_at_venue(self.id)
+        return {
+            'id': self.id,
+            'name': self.name,
+            'genres': self.genres,
+            'address': self.address,
+            'city': self.city,
+            'state': self.state,
+            'phone': self.phone,
+            'website': self.website,
+            'facebook_link': self.facebook_link,
+            'seeking_talent': self.seeking_talent,
+            'seeking_description': self.seeking_description,
+            'image_link': self.image_link,
+            'past_shows': [{
+                'artist_id': show.Artist.id,
+                "artist_name": show.Artist.name,
+                "artist_image_link": show.Artist.image_link,
+                "start_time": show.start_time.strftime("%m/%d/%Y, %H:%M")
+            } for show in past_shows],
+            'upcoming_shows': [{
+                'artist_id': show.Artist.id,
+                "artist_name": show.Artist.name,
+                "artist_image_link": show.Artist.image_link,
+                "start_time": show.start_time.strftime("%m/%d/%Y, %H:%M")
+            } for show in upcoming_shows],
+            'past_shows_count': len(past_shows),
+            'upcoming_shows_count': len(upcoming_shows)
+
+        }
+
     def __repr__(self):
         return '<Venue %r>' % self.name
 
@@ -78,6 +115,7 @@ class Artist(db.Model):
     seeking_venue = db.Column(db.Boolean)
     seeking_description = db.Column(db.String)
     image_link = db.Column(db.String)
+    shows = db.relationship('Show', backref='Artist', lazy=True)
 
     @property
     def serialize(self):
@@ -111,8 +149,8 @@ class Show(db.Model):
     __tablename__ = 'Show'
 
     id = db.Column(db.Integer, primary_key=True)
-    venue_id = db.Column(db.Integer)
-    artist_id = db.Column(db.Integer)
+    venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'), nullable=False)
+    artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'), nullable=False)
     start_time = db.Column(db.DateTime())
 
     @property
@@ -124,8 +162,20 @@ class Show(db.Model):
             'start_time': self.start_time
         }
 
-    def __repr__(self):
-        return '<Show %r>' % self.name
+    @property
+    def shows(self):
+        # artist = crud.get_artist_by_id(self.artist_id)
+        return {
+            'artist_id': self.Artist.id,
+            "artist_name": self.Artist.name,
+            "artist_image_link": self.Artist.image_link,
+            "start_time": self.start_time
+        }
+
+
+class ArtistShows:
+    def __init__(self, **kwargs):
+        self.__dict__ = kwargs
 
 
 # Create the initial database
