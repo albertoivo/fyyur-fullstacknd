@@ -88,13 +88,12 @@ class Venue(db.Model):
             } for show in past_shows],
             'upcoming_shows': [{
                 'artist_id': show.Artist.id,
-                "artist_name": show.Artist.name,
-                "artist_image_link": show.Artist.image_link,
-                "start_time": show.start_time.strftime("%m/%d/%Y, %H:%M")
+                'artist_name': show.Artist.name,
+                'artist_image_link': show.Artist.image_link,
+                'start_time': show.start_time.strftime("%m/%d/%Y, %H:%M")
             } for show in upcoming_shows],
             'past_shows_count': len(past_shows),
             'upcoming_shows_count': len(upcoming_shows)
-
         }
 
     def __repr__(self):
@@ -139,6 +138,38 @@ class Artist(db.Model):
         return {
             'id': self.id,
             'name': self.name,
+        }
+
+    @property
+    def complete(self):
+        past_shows = crud.get_past_artist_shows(self.id)
+        upcoming_shows = crud.get_upcoming_artist_shows(self.id)
+        return {
+            'id': self.id,
+            'name': self.name,
+            'genres': self.genres,
+            'city': self.city,
+            'state': self.state,
+            'phone': self.phone,
+            'website': self.website,
+            'facebook_link': self.facebook_link,
+            'seeking_venue': self.seeking_venue,
+            'seeking_description': self.seeking_description,
+            'image_link': self.image_link,
+            'past_shows': [{
+                'venue_id': show.Venue.id,
+                'venue_name': show.Venue.name,
+                'venue_image_link': show.Venue.image_link,
+                'start_time': show.start_time.strftime("%m/%d/%Y, %H:%M")
+            } for show in past_shows],
+            'upcoming_shows': [{
+                'venue_id': show.Venue.id,
+                'venue_name': show.Venue.name,
+                'venue_image_link': show.Venue.image_link,
+                'start_time': show.start_time.strftime("%m/%d/%Y, %H:%M")
+            } for show in upcoming_shows],
+            'past_shows_count': len(past_shows),
+            'upcoming_shows_count': len(upcoming_shows)
         }
 
     def __repr__(self):

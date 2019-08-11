@@ -19,6 +19,14 @@ def get_artist_by_partial_name(search):
     return Artist.query.filter(Artist.name.ilike("%" + search + "%")).all()
 
 
+def get_past_artist_shows(artist_id):
+    return db.session.query(Show).filter(Show.start_time < datetime.datetime.now(), Show.artist_id == artist_id).all()
+
+
+def get_upcoming_artist_shows(artist_id):
+    return db.session.query(Show).filter(Show.start_time > datetime.datetime.now(), Show.artist_id == artist_id).all()
+
+
 def create_venue(new_venue):
     db.session.add(new_venue)
     db.session.commit()
