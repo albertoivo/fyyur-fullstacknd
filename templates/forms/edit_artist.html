@@ -15,23 +15,31 @@
               {{ form.city(class_ = 'form-control', placeholder='City', value=artist.city, autofocus = true) }}
             </div>
             <div class="form-group">
-              {{ form.state(class_ = 'form-control', placeholder='State', value=artist.state, autofocus = true) }}
+              {{ form.state(class_ = 'form-control', value = artist.state, autofocus = true) }}
             </div>
           </div>
       </div>
       <div class="form-group">
           <label for="phone">Phone</label>
           {{ form.phone(class_ = 'form-control', placeholder='xxx-xxx-xxxx', value=artist.phone, autofocus = true) }}
-        </div>
+      </div>
       <div class="form-group">
         <label for="genres">Genres</label>
         <small>Ctrl+Click to select multiple</small>
-        {{ form.genres(class_ = 'form-control', placeholder='Genres, separated by commas', value=artist.genres, id=form.genres, autofocus = true) }}
+        {{ form.genres(class_ = 'form-control', value=artist.genres, id=form.genres, autofocus = true) }}
       </div>
       <div class="form-group">
-          <label for="genres">Facebook Link</label>
+          <label for="facebook_link">Facebook Link</label>
           {{ form.facebook_link(class_ = 'form-control', placeholder='http://', id=form.facebook_link, value=artist.facebook_link, autofocus = true) }}
-        </div>
+      </div>
+      <div class="form-group">
+          <label for="image_link">Image Link</label>
+          {{ form.image_link(class_ = 'form-control', placeholder='http://', id=form.image_link, value=artist.image_link, autofocus = true) }}
+      </div>
+      <div class="form-group">
+          <label for="website">Website</label>
+          {{ form.website(class_ = 'form-control', placeholder='http://', id=form.website, value=artist.website, autofocus = true) }}
+      </div>
       <input type="submit" value="Edit Artist" class="btn btn-primary btn-lg btn-block">
     </form>
   </div>
