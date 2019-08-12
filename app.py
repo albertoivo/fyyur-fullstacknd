@@ -59,11 +59,10 @@ def index():
 
 @app.route('/venues')
 def venues():
-    venues = crud.get_all_venues()
-    data = {"": [v.local for v in venues]}
+    data = {"": [v.local for v in crud.get_venues_locals()]}
     for d in data[""]:
         d["venues"] = [
-            v.serialize for v in venues if v.city == d["city"] and v.state == d["state"]
+            v.serialize for v in crud.get_all_venues() if v.city == d["city"] and v.state == d["state"]
         ]
 
     return render_template('pages/venues.html', areas=data[""])
@@ -182,8 +181,28 @@ def edit_artist(artist_id):
 
 @app.route('/artists/<int:artist_id>/edit', methods=['POST'])
 def edit_artist_submission(artist_id):
-    # TODO: take values from the form submitted, and update existing
-    # artist record with ID <artist_id> using the new attributes
+    form = ArtistForm(request.form)
+
+    try:
+        crud.edit_artist(
+            artist_id,
+            form.name.data,
+            form.city.data,
+            form.state.data,
+            form.phone.data,
+            form.genres.data,
+            form.facebook_link.data,
+            form.image_link.data,
+            form.website.data,
+            form.seeking_venue.data,
+            form.seeking_description.data
+        )
+
+        flash('Artist ' + form.name.data + ' was successfully edited!')
+
+    except ValueError:  # FIXME melhorar essa exception
+
+        flash('An error occurred. Artist ' + form.name + ' could not be listed.')
 
     return redirect(url_for('show_artist', artist_id=artist_id))
 

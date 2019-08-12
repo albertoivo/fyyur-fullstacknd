@@ -7,6 +7,23 @@ def create_artist(new_artist):
     db.session.commit()
 
 
+def edit_artist(id, name, city, state, phone, genres, facebook_link, image_link, website, seeking_venue, seeking_description):
+    artist = get_artist_by_id(id)
+
+    artist.city = city
+    artist.seeking_description = seeking_description
+    artist.seeking_venue = seeking_venue
+    artist.phone = phone
+    artist.state = state
+    artist.name = name
+    artist.genres = genres
+    artist.facebook_link = facebook_link
+    artist.website = website
+    artist.image_link = image_link
+
+    db.session.commit()
+
+
 def get_all_artists():
     return Artist.query.all()
 
@@ -40,6 +57,14 @@ def get_venue_by_id(id):
     return Venue.query.filter_by(id=id).first_or_404()
 
 
+def get_venue_by_city(city):
+    return Venue.query.filter_by(city=city).all()
+
+
+def get_venues_locals():
+    return Venue.query.distinct(Venue.city, Venue.state).all()
+
+
 def get_venue_by_partial_name(search):
     return Venue.query.filter(Venue.name.ilike("%" + search + "%")).all()
 
@@ -50,7 +75,7 @@ def create_show(new_show):
 
 
 def get_all_shows():
-    return Show.query.all()
+    return Show.query.order_by(Show.start_time.desc()).all()
 
 
 def get_shows_by_venue_id(venue_id):

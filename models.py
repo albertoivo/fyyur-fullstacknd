@@ -204,10 +204,5 @@ class Show(db.Model):
         }
 
 
-class ArtistShows:
-    def __init__(self, **kwargs):
-        self.__dict__ = kwargs
-
-
 # Create the initial database
 db.create_all()
