@@ -3,7 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 from config import Config
 from flask_migrate import Migrate
 import crud
-import datetime
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -30,7 +29,6 @@ class Venue(db.Model):
     seeking_talent = db.Column(db.Boolean)
     seeking_description = db.Column(db.String)
     image_link = db.Column(db.String)
-    shows = db.relationship('Show', backref='Venue', lazy=True)
 
     @property
     def serialize(self):
@@ -114,7 +112,6 @@ class Artist(db.Model):
     seeking_venue = db.Column(db.Boolean)
     seeking_description = db.Column(db.String)
     image_link = db.Column(db.String)
-    shows = db.relationship('Show', backref='Artist', lazy=True)
 
     @property
     def serialize(self):
@@ -180,9 +177,14 @@ class Show(db.Model):
     __tablename__ = 'Show'
 
     id = db.Column(db.Integer, primary_key=True)
-    venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'), nullable=False)
-    artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'), nullable=False)
+
     start_time = db.Column(db.DateTime())
+
+    artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'), nullable=False)
+    artist = db.relationship('Artist', backref=db.backref('shows', cascade="all,delete"))
+
+    venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'), nullable=False)
+    venue = db.relationship('Venue', backref=db.backref('shows', cascade="all,delete"))
 
     @property
     def serialize(self):
