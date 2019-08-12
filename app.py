@@ -138,7 +138,12 @@ def delete_venue(venue_id):
     # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
     # clicking that button delete it from the db then redirect the user to the homepage
 
-    crud.delete_venue(venue_id)
+    try:
+        crud.delete_venue(venue_id)
+        flash('The venue has been removed together with all of its shows.')
+        return render_template('pages/home.html')
+    except ValueError:
+        flash('It was not possible to delete this Venue')
 
     return None
 
