@@ -79,15 +79,15 @@ class Venue(db.Model):
             'seeking_description': self.seeking_description,
             'image_link': self.image_link,
             'past_shows': [{
-                'artist_id': show.Artist.id,
-                "artist_name": show.Artist.name,
-                "artist_image_link": show.Artist.image_link,
+                'artist_id': show.artist.id,
+                "artist_name": show.artist.name,
+                "artist_image_link": show.artist.image_link,
                 "start_time": show.start_time.strftime("%m/%d/%Y, %H:%M")
             } for show in past_shows],
             'upcoming_shows': [{
-                'artist_id': show.Artist.id,
-                'artist_name': show.Artist.name,
-                'artist_image_link': show.Artist.image_link,
+                'artist_id': show.artist.id,
+                'artist_name': show.artist.name,
+                'artist_image_link': show.artist.image_link,
                 'start_time': show.start_time.strftime("%m/%d/%Y, %H:%M")
             } for show in upcoming_shows],
             'past_shows_count': len(past_shows),
@@ -154,15 +154,15 @@ class Artist(db.Model):
             'seeking_description': self.seeking_description,
             'image_link': self.image_link,
             'past_shows': [{
-                'venue_id': show.Venue.id,
-                'venue_name': show.Venue.name,
-                'venue_image_link': show.Venue.image_link,
+                'venue_id': show.venue.id,
+                'venue_name': show.venue.name,
+                'venue_image_link': show.venue.image_link,
                 'start_time': show.start_time.strftime("%m/%d/%Y, %H:%M")
             } for show in past_shows],
             'upcoming_shows': [{
-                'venue_id': show.Venue.id,
-                'venue_name': show.Venue.name,
-                'venue_image_link': show.Venue.image_link,
+                'venue_id': show.venue.id,
+                'venue_name': show.venue.name,
+                'venue_image_link': show.venue.image_link,
                 'start_time': show.start_time.strftime("%m/%d/%Y, %H:%M")
             } for show in upcoming_shows],
             'past_shows_count': len(past_shows),
