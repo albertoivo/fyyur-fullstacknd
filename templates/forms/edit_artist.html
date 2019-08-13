@@ -15,7 +15,7 @@
               {{ form.city(class_ = 'form-control', placeholder='City', value=artist.city, autofocus = true) }}
             </div>
             <div class="form-group">
-              {{ form.state(class_ = 'form-control', checked = artist.state, autofocus = true) }}
+              {{ form.state|replace('value="%s"'%form.artist.state, 'selected value="%s"'%form.artist.state)|safe }}
             </div>
           </div>
       </div>
@@ -26,7 +26,7 @@
       <div class="form-group">
         <label for="genres">Genres</label>
         <small>Ctrl+Click to select multiple</small>
-        {{ form.genres(class_ = 'form-control', selected = artist.genres, id=form.genres, autofocus = true) }}
+        {{ form.genres(class_ = 'form-control', value=artist.genres, id=form.genres, autofocus = true) }}
       </div>
       <div class="form-group">
           <label for="facebook_link">Facebook Link</label>
@@ -42,13 +42,12 @@
       </div>
       <div class="form-seeking_venue">
           <label for="seeking_venue">Seeking Venue?</label>
-          {{ form.seeking_venue(class_ = 'form-control', value=artist.seeking_venue, id=form.seeking_venue, autofocus = true) }}
+          {{ form.seeking_venue(class_ = 'form-control', id=form.seeking_venue, autofocus = true) }}
       </div>
       <div class="form-seeking_description">
           <label for="seeking_description">Seeking description</label>
-          {{ form.seeking_description(class_ = 'form-control', value=artist.seeking_description, id=form.seeking_description, autofocus = true) }}
+          {{ form.seeking_description(class_ = 'form-control', id=form.seeking_description, autofocus = true) }}
       </div>
-      <br />
       <input type="submit" value="Edit Artist" class="btn btn-primary btn-lg btn-block">
     </form>
   </div>
