@@ -10,9 +10,9 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 
-# ---------------------------------------------------------------------------- #
+# -------------------------------------------------------------------------- #
 # Models.
-# ---------------------------------------------------------------------------- #
+# -------------------------------------------------------------------------- #
 
 class Venue(db.Model):
     __tablename__ = 'Venue'
@@ -180,11 +180,14 @@ class Show(db.Model):
 
     start_time = db.Column(db.DateTime())
 
-    artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'), nullable=False)
-    artist = db.relationship('Artist', backref=db.backref('shows', cascade="all,delete"))
+    artist_id = db.Column(
+        db.Integer, db.ForeignKey('Artist.id'), nullable=False)
+    artist = db.relationship(
+        'Artist', backref=db.backref('shows', cascade="all,delete"))
 
     venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'), nullable=False)
-    venue = db.relationship('Venue', backref=db.backref('shows', cascade="all,delete"))
+    venue = db.relationship(
+        'Venue', backref=db.backref('shows', cascade="all,delete"))
 
     @property
     def serialize(self):

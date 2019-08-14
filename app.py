@@ -1,11 +1,11 @@
-# ---------------------------------------------------------------------------- #
+# -------------------------------------------------------------------------- #
 # Imports
-# ---------------------------------------------------------------------------- #
+# -------------------------------------------------------------------------- #
 
 import dateutil.parser
 import babel
 import crud
-from flask import Flask, render_template, request, Response, flash, redirect, url_for
+from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 import logging
@@ -16,9 +16,9 @@ from flask_migrate import Migrate
 from config import Config
 
 
-# ---------------------------------------------------------------------------- #
+# -------------------------------------------------------------------------- #
 # App Config.
-# ---------------------------------------------------------------------------- #
+# -------------------------------------------------------------------------- #
 
 APPLICATION_NAME = "app.py"
 
@@ -28,9 +28,9 @@ moment = Moment(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-# ---------------------------------------------------------------------------- #
+# -------------------------------------------------------------------------- #
 # Filters.
-# ---------------------------------------------------------------------------- #
+# -------------------------------------------------------------------------- #
 
 
 def format_datetime(value, format='medium'):
@@ -45,9 +45,9 @@ def format_datetime(value, format='medium'):
 app.jinja_env.filters['datetime'] = format_datetime
 
 
-# ---------------------------------------------------------------------------- #
+# -------------------------------------------------------------------------- #
 # Controllers.
-# ---------------------------------------------------------------------------- #
+# -------------------------------------------------------------------------- #
 
 @app.route('/')
 def index():
@@ -61,9 +61,8 @@ def index():
 def venues():
     data = {"": [v.local for v in crud.get_venues_locals()]}
     for d in data[""]:
-        d["venues"] = [
-            v.serialize for v in crud.get_all_venues() if v.city == d["city"] and v.state == d["state"]
-        ]
+        d["venues"] = [v.serialize for v in crud.get_all_venues(
+        ) if v.city == d["city"] and v.state == d["state"]]
 
     return render_template('pages/venues.html', areas=data[""])
 
@@ -125,7 +124,8 @@ def create_venue_submission():
 
     except ValueError:  # FIXME melhorar essa exception
 
-        flash('An error occurred. Venue ' + form.name + ' could not be listed.')
+        flash(
+            'An error occurred. Venue ' + form.name + ' could not be listed.')
 
     return render_template('pages/home.html')
 
@@ -133,10 +133,12 @@ def create_venue_submission():
 @app.route('/venues/<int:venue_id>', methods=['DELETE'])
 def delete_venue(venue_id):
     # TODO: Complete this endpoint for taking a venue_id, and using
-    # SQLAlchemy ORM to delete a record. Handle cases where the session commit could fail.
+    # SQLAlchemy ORM to delete a record. Handle cases where the session commit
+    # could fail.
 
-    # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
-    # clicking that button delete it from the db then redirect the user to the homepage
+    # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page,
+    # have it so that clicking that button delete it from the db then redirect
+    # the user to the homepage
 
     try:
         crud.delete_venue(venue_id)
@@ -168,7 +170,10 @@ def search_artists():
         artist.search for artist in artists
     ]
 
-    return render_template('pages/search_artists.html', results=response, search_term=search)
+    return render_template(
+        'pages/search_artists.html',
+        results=response,
+        search_term=search)
 
 
 @app.route('/artists/<int:artist_id>')
@@ -212,7 +217,8 @@ def edit_artist_submission(artist_id):
 
     except ValueError:  # FIXME melhorar essa exception
 
-        flash('An error occurred. Artist ' + form.name + ' could not be listed.')
+        flash('An error occurred. Artist ' + form.name +
+              ' could not be listed.')
 
     return redirect(url_for('show_artist', artist_id=artist_id))
 
@@ -249,7 +255,8 @@ def edit_venue_submission(venue_id):
 
     except ValueError:  # FIXME melhorar essa exception
 
-        flash('An error occurred. Venue ' + form.name + ' could not be listed.')
+        flash(
+            'An error occurred. Venue ' + form.name + ' could not be listed.')
 
     return redirect(url_for('show_venue', venue_id=venue_id))
 
@@ -289,7 +296,8 @@ def create_artist_submission():
 
     except ValueError:  # FIXME melhorar essa exception
 
-        flash('An error occurred. Artist ' + form.name + ' could not be listed.')
+        flash('An error occurred. Artist ' + form.name +
+              ' could not be listed.')
 
     return render_template('pages/home.html')
 
@@ -357,17 +365,16 @@ def server_error(error):
 
 if not app.debug:
     file_handler = FileHandler('error.log')
-    file_handler.setFormatter(
-        Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]')
-    )
+    file_handler.setFormatter(Formatter(
+        '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
     app.logger.setLevel(logging.INFO)
     file_handler.setLevel(logging.INFO)
     app.logger.addHandler(file_handler)
     app.logger.info('errors')
 
-# ---------------------------------------------------------------------------- #
+# -------------------------------------------------------------------------- #
 # Launch.
-# ---------------------------------------------------------------------------- #
+# -------------------------------------------------------------------------- #
 
 # Default port:
 if __name__ == '__main__':
