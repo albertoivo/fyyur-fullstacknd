@@ -2,11 +2,6 @@ from models import db, Artist, Venue, Show
 import datetime
 
 
-def create_artist(new_artist):
-    db.session.add(new_artist)
-    db.session.commit()
-
-
 def edit_artist(
         id,
         name,
@@ -35,18 +30,12 @@ def edit_artist(
     db.session.commit()
 
 
-def delete_artist(id):
-    artist = get_artist_by_id(id)
-    db.session.delete(artist)
-    db.session.commit()
-
-
 def get_all_artists():
     return Artist.query.all()
 
 
 def get_artist_by_id(id):
-    return Artist.query.get(id)
+    return Artist.query.filter_by(id=id).first_or_404()
 
 
 def get_artist_by_partial_name(search):
@@ -63,11 +52,6 @@ def get_upcoming_artist_shows(artist_id):
     return db.session.query(Show).filter(
         Show.start_time > datetime.datetime.now(),
         Show.artist_id == artist_id).all()
-
-
-def create_venue(new_venue):
-    db.session.add(new_venue)
-    db.session.commit()
 
 
 def edit_venue(
@@ -100,12 +84,6 @@ def edit_venue(
     db.session.commit()
 
 
-def delete_venue(id):
-    venue = get_venue_by_id(id)
-    db.session.delete(venue)
-    db.session.commit()
-
-
 def get_all_venues():
     return Venue.query.all()
 
@@ -124,11 +102,6 @@ def get_venues_locals():
 
 def get_venue_by_partial_name(search):
     return Venue.query.filter(Venue.name.ilike("%" + search + "%")).all()
-
-
-def create_show(new_show):
-    db.session.add(new_show)
-    db.session.commit()
 
 
 def get_all_shows():

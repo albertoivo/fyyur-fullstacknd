@@ -30,6 +30,14 @@ class Venue(db.Model):
     seeking_description = db.Column(db.String)
     image_link = db.Column(db.String)
 
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
     @property
     def serialize(self):
         return {
@@ -190,6 +198,10 @@ class Show(db.Model):
     venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'), nullable=False)
     venue = db.relationship(
         'Venue', backref=db.backref('shows', cascade="all,delete"))
+
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
 
     @property
     def serialize(self):

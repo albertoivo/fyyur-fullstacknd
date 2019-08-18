@@ -51,11 +51,11 @@
 
 <div class="row">
   <div class="col-sm-3">
-    <a href="{{ url_for('edit_venue', venue_id=venue.id) }}"
+    <a href="{{ url_for('venue.edit_venue', venue_id=venue.id) }}"
        class="btn btn-primary btn-lg btn-block">Edit Venue</a>
   </div>
   <div class="col-sm-3">
-    <input type="submit" value="Deletar Venue" class="btn btn-primary btn-lg btn-block" formaction="{{ url_for('delete_venue', venue_id=venue.id) }}">
+    <input type="submit" value="Deletar Venue" class="btn btn-primary btn-lg btn-block" formaction="{{ url_for('venue.delete_venue', venue_id=venue.id) }}">
   </div>
 </div>
 
