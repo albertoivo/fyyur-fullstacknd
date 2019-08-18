@@ -46,7 +46,7 @@ def get_all_artists():
 
 
 def get_artist_by_id(id):
-    return Artist.query.filter_by(id=id).first_or_404()
+    return Artist.query.get(id)
 
 
 def get_artist_by_partial_name(search):
@@ -114,8 +114,8 @@ def get_venue_by_id(id):
     return Venue.query.filter_by(id=id).first_or_404()
 
 
-def get_venue_by_city(city):
-    return Venue.query.filter_by(city=city).all()
+def get_venue_by_local(city, state):
+    return Venue.query.filter_by(city=city, state=state).all()
 
 
 def get_venues_locals():

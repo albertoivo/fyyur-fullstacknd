@@ -113,13 +113,15 @@ class Artist(db.Model):
     seeking_description = db.Column(db.String)
     image_link = db.Column(db.String)
 
-    @property
-    def serialize(self):
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def details(self):
         return {
             'id': self.id,
             'name': self.name,
             'genres': self.genres,
-            'address': self.address,
             'city': self.city,
             'state': self.state,
             'phone': self.phone,

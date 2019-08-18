@@ -59,12 +59,13 @@ def index():
 
 @app.route('/venues')
 def venues():
-    data = {"": [v.local for v in crud.get_venues_locals()]}
-    for d in data[""]:
-        d["venues"] = [v.serialize for v in crud.get_all_venues(
-        ) if v.city == d["city"] and v.state == d["state"]]
+    data = [v.local for v in crud.get_venues_locals()]
+    for d in data:
+        d["venues"] = [
+            v.serialize for v in crud.get_venue_by_local(d["city"], d["state"])
+        ]
 
-    return render_template('pages/venues.html', areas=data[""])
+    return render_template('pages/venues.html', areas=data)
 
 
 @app.route('/venues/search', methods=['POST'])
@@ -124,8 +125,7 @@ def create_venue_submission():
 
     except ValueError:  # FIXME melhorar essa exception
 
-        flash(
-            'An error occurred. Venue ' + form.name + ' could not be listed.')
+        flash('An error occurred. Venue ' + form.name + ' could not be listed.')
 
     return render_template('pages/home.html')
 
@@ -191,6 +191,10 @@ def show_artist(artist_id):
 def edit_artist(artist_id):
     form = ArtistForm(request.form)
     artist = crud.get_artist_by_id(artist_id)
+
+    form.state.process_data(artist.state)
+    form.genres.process_data(artist.genres)
+
     return render_template('forms/edit_artist.html', form=form, artist=artist)
 
 
@@ -290,7 +294,7 @@ def create_artist_submission():
             seeking_description=form.seeking_description.data
         )
 
-        crud.create_artist(new_artist)
+        Artist.create(new_artist)
 
         flash('Artist ' + request.form['name'] + ' was successfully listed!')
 

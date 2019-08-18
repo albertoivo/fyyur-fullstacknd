@@ -15,7 +15,7 @@
               {{ form.city(class_ = 'form-control', placeholder='City', value=artist.city, autofocus = true) }}
             </div>
             <div class="form-group">
-              {{ form.state(class_ = 'form-control', autofocus = true)|replace('value="%s"'%artist.state, 'selected value="%s"'%artist.state)|safe }}
+              {{ form.state(class_ = 'form-control', autofocus = true) }}
             </div>
           </div>
       </div>
@@ -24,9 +24,9 @@
           {{ form.phone(class_ = 'form-control', placeholder='xxx-xxx-xxxx', value=artist.phone, autofocus = true) }}
       </div>
       <div class="form-group">
-        <label for="genres">Genres {{ artist.genres }}</label>
+        <label for="genres">Genres</label>
         <small>Ctrl+Click to select multiple</small>
-        {{ form.genres(class_ = 'form-control')|replace('value="%s"'%artist.genres, 'selected value="%s"'%artist.genres)|safe }}
+        {{ form.genres(class_ = 'form-control') }}
       </div>
       <div class="form-group">
           <label for="facebook_link">Facebook Link</label>
