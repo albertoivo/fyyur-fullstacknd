@@ -224,4 +224,4 @@ class Show(db.Model):
 
 
 # Create the initial database
-db.create_all()
+# db.create_all()

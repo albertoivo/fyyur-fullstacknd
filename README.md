@@ -31,7 +31,7 @@ Our tech stack will include:
 
   ```sh
   ├── README.md
-  ├── app.py *** the main driver of the app. 
+  ├── app.py *** the main driver of the app.
                     "python app.py" to run after installing dependences
   ├── config.py *** Database URLs, CSRF generation, etc
   ├── error.log
@@ -39,7 +39,7 @@ Our tech stack will include:
   ├── models.py  *** Your SQL Alchemy models
   ├── requirements.txt *** The dependencies we need to install with "pip3 install -r requirements.txt"
   ├── static
-  │   ├── css 
+  │   ├── css
   │   ├── font
   │   ├── ico
   │   ├── img
